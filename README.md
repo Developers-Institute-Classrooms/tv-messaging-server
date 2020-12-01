@@ -1,15 +1,13 @@
-# Node Babel Template
+# TV Messaging Server
 
-A node.js and babel template repo.
+API Server for the TV Messaging App.
 
 ## MongoDB
 
-Get a MongoDB instance running in a container with dummy data.
+Get a MongoDB instance running in a container.
 
 ```shell
-docker run -d -p 27017:27017 --name node-babel-mongo \
-  -v $(pwd)/data:/docker-entrypoint-initdb.d \
-  mongo
+docker run -d -p 27017:27017 --name tv-messaging-db mongo
 ```
 
 ## Getting Started

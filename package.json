@@ -8,7 +8,10 @@
     "start": "yarn run build && node dist/server.js",
     "start:watch": "yarn run build && nodemon --watch src --exec yarn start",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "yarn run start:watch"
+    "dev": "yarn run start:watch",
+    "docker:build": "docker build -t nikatdevelopersinstitute/tv-messaging-server .",
+    "docker:push": "docker push nikatdevelopersinstitute/tv-messaging-server",
+    "docker:hub": "npm run docker:build && npm run docker:push"
   },
   "keywords": [],
   "author": "",

@@ -29,7 +29,7 @@ server.use('/api/messages', messageRouter(Message));
 server.use('/api/rooms', roomRouter(Room));
 
 server.get("/", (req, res) => {
-  res.send("Hello World"); 
+  res.send("Hello, World!"); 
 });
 
 const HTTPserver = server.listen(PORT, () => {

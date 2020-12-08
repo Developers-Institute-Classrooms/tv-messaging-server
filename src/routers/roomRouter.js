@@ -5,10 +5,6 @@ import express from 'express';
 const roomRouter = (Room) => {
   const router = express.Router();
 
-  // CRUD routes
-  // name: { type: String, required: true },
-  // admins: [ String ]
-
   // CREATE/POST
   router.post('/', async (req, res) => {
     try {
@@ -57,15 +53,13 @@ const roomRouter = (Room) => {
         updateObject.name = req.body.name;
       }
       if (req.body.admins && req.body.admins.length > 0) {
-        updateObject.$push = { admins: req.body.admins[0] }
+        updateObject.$push = { admins: req.body.admins[0] };
       }
       console.log('updateObject', updateObject);
 
-      const updatedRoom = await Room.findByIdAndUpdate(
-        roomId,
-        updateObject,
-        { new: true }
-      );
+      const updatedRoom = await Room.findByIdAndUpdate(roomId, updateObject, {
+        new: true,
+      });
       console.log(updatedRoom);
 
       return res.status(200).json(updatedRoom);

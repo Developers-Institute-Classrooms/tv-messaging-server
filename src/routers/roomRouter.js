@@ -53,7 +53,7 @@ const roomRouter = (Room) => {
         updateObject.name = req.body.name;
       }
       if (req.body.admins && req.body.admins.length > 0) {
-        updateObject.$push = { admins: req.body.admins[0] };
+        updateObject.$push = { admins: { $each: req.body.admins } };
       }
       console.log('updateObject', updateObject);
 
@@ -71,11 +71,14 @@ const roomRouter = (Room) => {
 
   // DELETE/DELETE
   router.delete('/:roomId', async (req, res) => {
-    // 1. extract the roomId from the URL
-    const { roomId } = req.params;
-    // 2. use the findByIdAndDelete method
-    const deleteMessage = await Room.findByIdAndDelete(roomId);
-    return res.status(200).json(deleteMessage);
+    try {
+      const { roomId } = req.params;
+      const deleteMessage = await Room.findByIdAndDelete(roomId);
+      return res.status(200).json(deleteMessage);
+    } catch (e) {
+      console.error(e);
+      return res.status(500).send(e);
+    }
   });
 
   return router;

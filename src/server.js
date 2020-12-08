@@ -25,7 +25,7 @@ server.use(express.json());
 server.use('/api/messages', messageRouter(Message));
 
 server.get("/", (req, res) => {
-  res.send("Hello World"); 
+  res.send("Hello, World!"); 
 });
 
 const HTTPserver = server.listen(PORT, () => {

@@ -65,8 +65,6 @@ const messageRouter = (Message) => {
         { new: true }
       );
 
-      console.log(updatedMessage);
-
       return res.status(200).json(updatedMessage);
     } catch (e) {
       console.error(e);

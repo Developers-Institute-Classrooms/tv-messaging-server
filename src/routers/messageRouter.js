@@ -40,26 +40,11 @@ const messageRouter = (Message) => {
   });
 
   // UPDATE
-  // messageId of the message to update - URL parameter
-  // data to update - request body
   router.patch('/:messageId', async (req, res) => {
     try {
-      console.log(req.params);
-      console.log(req.body);
-
-      // 0. extract the messageId from the URL
       const { messageId } = req.params;
 
-      // 1. find the message in the database using the message ID
-
-      // 2. update the message object
-
-      // 3. save the updated message object
-
       const updatedMessage = await Message.findByIdAndUpdate(
-        // document ID,
-        // what to update,
-        // options object
         messageId,
         req.body,
         { new: true }

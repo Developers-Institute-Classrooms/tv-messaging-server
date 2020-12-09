@@ -5,10 +5,6 @@ import express from 'express';
 const roomRouter = (Room) => {
   const router = express.Router();
 
-  // CRUD routes
-  // name: { type: String, required: true },
-  // admins: [ String ]
-
   // CREATE/POST
   router.post('/', async (req, res) => {
     try {
@@ -45,27 +41,32 @@ const roomRouter = (Room) => {
     }
   });
 
-  // UPDATE/PATCH
   router.patch('/:roomId', async (req, res) => {
     try {
-      console.log(req.body);
-
       const { roomId } = req.params;
+      const { admins /** 'add' || 'remove' */ } = req.query;
       const updateObject = {};
 
       if (req.body.name) {
         updateObject.name = req.body.name;
       }
-      if (req.body.admins && req.body.admins.length > 0) {
-        updateObject.$push = { admins: req.body.admins[0] }
+
+      if (admins === 'add' || undefined) {
+        if (req.body.admins && req.body.admins.length > 0) {
+          updateObject.$push = { 'admins': { $each: req.body.admins } };
+        }
       }
+      if (admins === 'remove') {
+        if (req.body.admins && req.body.admins.length > 0) {
+          updateObject.$pull = { 'admins': { $in: req.body.admins } };
+        }
+      }
+
       console.log('updateObject', updateObject);
 
-      const updatedRoom = await Room.findByIdAndUpdate(
-        roomId,
-        updateObject,
-        { new: true }
-      );
+      const updatedRoom = await Room.findByIdAndUpdate(roomId, updateObject, {
+        new: true,
+      });
       console.log(updatedRoom);
 
       return res.status(200).json(updatedRoom);
@@ -77,11 +78,14 @@ const roomRouter = (Room) => {
 
   // DELETE/DELETE
   router.delete('/:roomId', async (req, res) => {
-    // 1. extract the roomId from the URL
-    const { roomId } = req.params;
-    // 2. use the findByIdAndDelete method
-    const deleteMessage = await Room.findByIdAndDelete(roomId);
-    return res.status(200).json(deleteMessage);
+    try {
+      const { roomId } = req.params;
+      const deleteMessage = await Room.findByIdAndDelete(roomId);
+      return res.status(200).json(deleteMessage);
+    } catch (e) {
+      console.error(e);
+      return res.status(500).send(e);
+    }
   });
 
   return router;

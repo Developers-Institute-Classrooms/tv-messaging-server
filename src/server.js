@@ -1,15 +1,18 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import authRouter from './routers/authRouter';
 import messageRouter from './routers/messageRouter';
 import roomRouter from './routers/roomRouter';
 import Message from './models/messageModel';
 import Room from './models/roomModel';
+import User from './models/userModel';
 
 const MONGO_CONN = `mongodb://localhost:27017/tvMessagingAPI`;
 const MONGO_OPTS = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: true,
+  useCreateIndex: true,
 };
 
 mongoose.connect(MONGO_CONN, MONGO_OPTS, (err) => {
@@ -25,6 +28,7 @@ const server = express();
 
 server.use(express.json());
 
+server.use('/auth', authRouter(User));
 server.use('/api/messages', messageRouter(Message));
 server.use('/api/rooms', roomRouter(Room));
 

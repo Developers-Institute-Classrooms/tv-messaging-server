@@ -1,5 +1,12 @@
 import express from 'express';
 
+/**
+ * @typedef Message
+ * @property {string} user - User ID
+ * @property {string} message - Actual message
+ * @property {string} room - Room ID 
+ */
+
 const messageRouter = (Message) => {
   const router = express.Router();
 
@@ -25,6 +32,9 @@ const messageRouter = (Message) => {
   });
 
   // READ
+  /**
+   * @returns {Message[]}
+   */
   router.get('/', async (req, res) => {
     try {
       // get the messages out of the database

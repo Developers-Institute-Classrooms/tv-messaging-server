@@ -41,20 +41,27 @@ const roomRouter = (Room) => {
     }
   });
 
-  // UPDATE/PATCH
   router.patch('/:roomId', async (req, res) => {
     try {
-      console.log(req.body);
-
       const { roomId } = req.params;
+      const { admins /** 'add' || 'remove' */ } = req.query;
       const updateObject = {};
 
       if (req.body.name) {
         updateObject.name = req.body.name;
       }
-      if (req.body.admins && req.body.admins.length > 0) {
-        updateObject.$push = { admins: { $each: req.body.admins } };
+
+      if (admins === 'add' || undefined) {
+        if (req.body.admins && req.body.admins.length > 0) {
+          updateObject.$push = { 'admins': { $each: req.body.admins } };
+        }
       }
+      if (admins === 'remove') {
+        if (req.body.admins && req.body.admins.length > 0) {
+          updateObject.$pull = { 'admins': { $in: req.body.admins } };
+        }
+      }
+
       console.log('updateObject', updateObject);
 
       const updatedRoom = await Room.findByIdAndUpdate(roomId, updateObject, {

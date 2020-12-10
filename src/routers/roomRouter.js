@@ -9,12 +9,16 @@ const roomRouter = (Room) => {
   router.post('/', async (req, res) => {
     try {
       const { name } = req.body;
+      const { sub } = req.payload;
 
       if (!name) {
         return res.status(400).json({ error: 'Name required!' });
       }
 
-      const newRoom = new Room(req.body);
+      const newRoom = new Room({
+        name,
+        admins: [sub]
+      });
       const savedRoom = await newRoom.save();
 
       console.log('savedRoom', savedRoom);

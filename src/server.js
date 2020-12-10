@@ -6,6 +6,7 @@ import roomRouter from './routers/roomRouter';
 import Message from './models/messageModel';
 import Room from './models/roomModel';
 import User from './models/userModel';
+import authMiddleware from './middleware/authMiddleware';
 
 const MONGO_CONN = `mongodb://localhost:27017/tvMessagingAPI`;
 const MONGO_OPTS = {
@@ -29,8 +30,8 @@ const server = express();
 server.use(express.json());
 
 server.use('/auth', authRouter(User));
-server.use('/api/messages', messageRouter(Message));
-server.use('/api/rooms', roomRouter(Room));
+server.use('/api/messages', authMiddleware, messageRouter(Message));
+server.use('/api/rooms', authMiddleware, roomRouter(Room));
 
 server.get('/', (req, res) => {
   res.send('Hello, World!');

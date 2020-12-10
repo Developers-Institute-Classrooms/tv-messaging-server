@@ -1,5 +1,9 @@
 import express from 'express';
 import argon2 from 'argon2';
+import jwt from 'jsonwebtoken';
+
+// JWT Secret
+const SECRET = '2020sucked';
 
 const authRouter = (User) => {
   const router = express.Router();
@@ -78,18 +82,21 @@ const authRouter = (User) => {
         return res.status(401).json({ error: 'Passwords do not match!' });
       }
 
-      // generate auth token - encode with base64 encoding
-      const token = JSON.stringify({
-        authenticated: true,
-        userId: existingUser._id
-      });
-      console.log(token);
+      // JWT Algorithm
+      const jwtOpts = { algorithm: 'HS256' };
 
-      const encodedToken = Buffer.from(token).toString('base64');
-      console.log(encodedToken);
+      // generate jwt payload
+      const payload = {
+        authenticated: true,
+        sub: existingUser._id
+      };
+      console.log(payload);
+
+      const jwtToken = jwt.sign(payload, SECRET, jwtOpts);
+      console.log(jwtToken);
   
       // send token back to the client
-      return res.status(200).json({ token: encodedToken });
+      return res.status(200).json({ token: jwtToken });
     } catch (e) {
       console.error(e);
       return res.status(500).send(e);

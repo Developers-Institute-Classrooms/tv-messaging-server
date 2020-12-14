@@ -11,7 +11,7 @@ const messageRouter = (Message) => {
   const router = express.Router();
 
   // CREATE
-  router.post('/', async (req, res) => {
+  router.post('/', async (req, res, next) => {
     try {
       const { message, room } = req.body;
       const { sub } = req.payload;
@@ -34,8 +34,7 @@ const messageRouter = (Message) => {
 
       return res.status(201).json(savedMessage);
     } catch (e) {
-      console.error(e);
-      return res.status(500).send(e);
+      next(e);
     }
   });
 
@@ -43,7 +42,7 @@ const messageRouter = (Message) => {
   /**
    * @returns {Message[]}
    */
-  router.get('/', async (req, res) => {
+  router.get('/', async (req, res, next) => {
     try {
       console.log('req.payload', req.payload);
       // get the messages out of the database
@@ -53,13 +52,12 @@ const messageRouter = (Message) => {
       // return messages array to the client
       return res.status(200).json(messages);
     } catch (e) {
-      console.error(e);
-      return res.status(500).send(e);
+      next(e);
     }
   });
 
   // UPDATE
-  router.patch('/:messageId', async (req, res) => {
+  router.patch('/:messageId', async (req, res, next) => {
     try {
       const { messageId } = req.params;
 
@@ -71,13 +69,12 @@ const messageRouter = (Message) => {
 
       return res.status(200).json(updatedMessage);
     } catch (e) {
-      console.error(e);
-      return res.status(500).send(e);
+      next(e);
     }
   });
 
   // DELETE
-  router.delete('/:messageId', async (req, res) => {
+  router.delete('/:messageId', async (req, res, next) => {
     try {
     // 1. extract the messageId from the URL
     const { messageId } = req.params;
@@ -85,8 +82,7 @@ const messageRouter = (Message) => {
     const deleteMessage = await Message.findByIdAndDelete(messageId);
     return res.status(200).json(deleteMessage);
     } catch (e) {
-      console.error(e);
-      return res.status(500).send(e);
+      next(e);
     }
   });
 
